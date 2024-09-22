@@ -16,6 +16,8 @@ def receive_data():
         data = flask.request.get_json()
         print(data)
         return "Data received"
+    else:
+        return "Error"
 
 
 if __name__ == "__main__":
