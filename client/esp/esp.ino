@@ -25,8 +25,8 @@ void setup() {
   Serial.println(WiFi.localIP());
 }
 
-String createPayload(char* message, unsigned long timeDifference) {
-  JSONDocument doc;
+String createPayload(char* message, String timeDifference) {
+  JsonDocument doc;
   doc["message"] = message;
   doc["time_difference"] = timeDifference;
   String payload;
@@ -38,7 +38,7 @@ struct ServerResponse {
   int httpCode;
   bool sendSuccess;
   String message;
-}
+};
 
 /**
 Input:
@@ -51,8 +51,7 @@ Input:
 
 @output
 */
-ServerResponse
-sendDataTo(WiFiClient client, String fullUrl, String payload, bool verboseLogging = true) {
+ServerResponse sendDataTo(HTTPClient& http, WiFiClient& client, String fullUrl, String payload, bool verboseLogging = true) {
   ServerResponse serverResponse;
 
   if (http.begin(client, fullUrl)) {
@@ -119,17 +118,18 @@ void loop() {
       }
 
       // 3. Decode received string -> split by " " and the item after [SEND] is the time difference
-      unsigned long timeDifference = (unsigned long) getValue(message, " ", 1);
+      String timeDifference =  getValue(message, ' ', 1);
       String payload = createPayload("sending", timeDifference);
 
       // Send the data to your server
       WiFiClient client;
       HTTPClient http;
 
-      ServerResponse postRequest = sendDataTo(client, receiveDataEndpoint, payload, true);
+      ServerResponse postRequest = sendDataTo(http, client, receiveDataEndpoint, payload, true);
       if (postRequest.sendSuccess) {
       }
     }
 
     delay(1000);
   }
+}
