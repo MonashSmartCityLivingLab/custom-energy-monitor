@@ -118,7 +118,7 @@ void loop() {
       }
 
       // 3. Decode received string -> split by " " and the item after [SEND] is the time difference
-      String timeDifference =  getValue(message, ' ', 1);
+      String timeDifference = getValue(message, ' ', 1);
       String payload = createPayload("sending", timeDifference);
 
       // Send the data to your server
